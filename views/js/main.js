@@ -472,6 +472,7 @@ var resizePizzas = function (size) {
 
     // Iterates through pizza elements on the page and changes their widths
     function changePizzaSizes(size) {
+        //We moved the size calculation out of the loop as it only needs to be calculated once.
         var pizzas = document.querySelectorAll(".randomPizzaContainer");
         var dx = determineDx(pizzas[0], size);
         var newwidth = (pizzas[0].offsetWidth + dx) + 'px';
@@ -529,11 +530,15 @@ function updatePositions() {
 
     // document.body.scrollTop is no longer supported in Chrome.
     var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-    var tmp = (scrollTop / 1250);
+
+    var phase = [];
+
+    for (var x = 0; x < 5; x++) {
+        phase.push(Math.sin(scrollTop / 1250 + x) * 100);
+    }
 
     for (var i = 0; i < movingPizzas.length; i++) {
-        var phase = Math.sin(tmp + (i % 5));
-        movingPizzas[i].style.left = movingPizzas[i].basicLeft + 100 * phase + 'px';
+        movingPizzas[i].style.left = movingPizzas[i].basicLeft + phase[i%5] + 'px';
     }
 
     // User Timing API to the rescue again. Seriously, it's worth learning.
@@ -554,8 +559,10 @@ document.addEventListener('DOMContentLoaded', function () {
     var cols = 8;
     var s = 256;
 
+    var numberOfPizzas = Math.ceil(window.innerHeight / s) * cols;
+
     var movingPizzaDiv = document.querySelector("#movingPizzas1");
-    for (var i = 0; i < 64; i++) { //8 rows * 256px = 2048px heigth... more than enough
+    for (var i = 0; i < numberOfPizzas; i++) {
         var elem = document.createElement('img');
         elem.className = 'mover';
         elem.src = "images/pizza.png";
