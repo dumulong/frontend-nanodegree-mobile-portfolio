@@ -16,6 +16,7 @@ Cameron Pittman, Udacity Course Developer
 cameron *at* udacity *dot* com
 */
 
+//Keep an array of the moving pizzas so we don't have to select them multiple times
 var movingPizzas;
 
 // As you may have realized, this website randomly generates pizzas.
@@ -531,12 +532,12 @@ function updatePositions() {
     // document.body.scrollTop is no longer supported in Chrome.
     var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
 
+    //Since there will be only 5 phases, calculate them in advance
     var phase = [];
-
     for (var x = 0; x < 5; x++) {
         phase.push(Math.sin(scrollTop / 1250 + x) * 100);
     }
-
+    //Now move the pizzas to the right based on the "phase"
     for (var i = 0; i < movingPizzas.length; i++) {
         movingPizzas[i].style.left = movingPizzas[i].basicLeft + phase[i%5] + 'px';
     }
@@ -559,9 +560,11 @@ document.addEventListener('DOMContentLoaded', function () {
     var cols = 8;
     var s = 256;
 
+    //Determine the amount of pizzas needed based on the height of the window.
     var numberOfPizzas = Math.ceil(window.innerHeight / s) * cols;
 
     var movingPizzaDiv = document.querySelector("#movingPizzas1");
+
     for (var i = 0; i < numberOfPizzas; i++) {
         var elem = document.createElement('img');
         elem.className = 'mover';
@@ -572,6 +575,7 @@ document.addEventListener('DOMContentLoaded', function () {
         elem.style.top = (Math.floor(i / cols) * s) + 'px';
         movingPizzaDiv.appendChild(elem);
     }
+    //Set our moving pizzas array by selecting them by class..
     movingPizzas = document.querySelectorAll('.mover');
     updatePositions();
 });
